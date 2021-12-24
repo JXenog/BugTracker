@@ -30,9 +30,15 @@ namespace BugTrackerWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Project obj)
         {
-            _db.Projects.Add(obj);
-            _db.SaveChanges();
-            return RedirectToAction("Index");
+            if(ModelState.IsValid)
+            {
+                _db.Projects.Add(obj);
+                _db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            return View(obj);
+            
         }
     }
 }
