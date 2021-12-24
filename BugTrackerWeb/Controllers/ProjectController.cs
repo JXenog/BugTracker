@@ -18,5 +18,21 @@ namespace BugTrackerWeb.Controllers
             IEnumerable<Project> objProjectList = _db.Projects;
             return View(objProjectList);
         }
+
+        //GET
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        //POST
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Project obj)
+        {
+            _db.Projects.Add(obj);
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+        }
     }
 }
