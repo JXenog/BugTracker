@@ -15,7 +15,7 @@ namespace BugTrackerWeb.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<Project> objProjectList = _db.Projects;
+            IEnumerable<Project> objProjectList = _db.Projects.OrderBy(x => x.DisplayOrder);
             return View(objProjectList);
         }
 
