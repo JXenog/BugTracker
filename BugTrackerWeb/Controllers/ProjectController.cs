@@ -67,11 +67,18 @@ namespace BugTrackerWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Project obj)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && obj != null)
             {
-                _db.Projects.Update(obj);
-                _db.SaveChanges();
-                return RedirectToAction("Index");
+                var entity = _db.Projects.Find(obj.Id);
+                if(entity != null)
+                {
+                    entity.Title = obj.Title;
+                    entity.DisplayOrder = obj.DisplayOrder;
+
+                    _db.Projects.Update(entity);
+                    _db.SaveChanges();
+                    return RedirectToAction("Index");
+                } 
             }
 
             return View(obj);
