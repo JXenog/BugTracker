@@ -48,11 +48,13 @@ namespace BugTrackerWeb.Controllers
         {
             if (id == null || id == 0)
             {
+                TempData["error"] = "Failed to delete project.";
                 return NotFound();
             }
             var projectFromDb = _db.Projects.Find(id);
             if (projectFromDb == null)
             {
+                TempData["error"] = "Failed to delete project.";
                 return NotFound();
             }
 
@@ -83,6 +85,7 @@ namespace BugTrackerWeb.Controllers
                 } 
             }
 
+            TempData["error"] = "Failed to update project.";
             return View(obj);
         }
 
@@ -99,6 +102,7 @@ namespace BugTrackerWeb.Controllers
                 return RedirectToAction("Index");
             }
 
+            TempData["error"] = "Failed to create project.";
             return View(obj);
         }
     }

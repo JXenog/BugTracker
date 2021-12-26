@@ -4,18 +4,13 @@
     ViewData["Title"] = "Index";
 }
 
-@if(TempData["success"] != null)
-{
-    <h2>@TempData["success"]</h2>
-}
-
 <div class="container p-3">
     <div class="row pt-4">
         <div class="col-6">
             <h2 class="text-primary">Project List</h2>
         </div>
         <div class="col-6 text-end">
-            <a asp-controller="Project" asp-action="Create" class="btn btn-success">
+            <a asp-controller="Project" asp-action="Create" class="btn btn-outline-success">
                 <i class="bi bi-folder-plus"></i> &nbsp; New Project
             </a>
         </div>
@@ -56,12 +51,13 @@
                     <div class="btn-group" role="group">                        
                         <a asp-controller="Project" asp-action="Edit" asp-route-id="@obj.Id"
                         class="btn btn-primary"> <i class="bi bi-gear-fill"></i></a>
-                        <button form="deleteForm" type="submit" class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Project"> <i class="bi bi-folder-x"></i></button>
+                        <button form="deleteForm" type="submit" class="btn btn btn-outline-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Project"> <i class="bi bi-folder-x"></i></button>
                     </div>
                 </td>
             </tr>
         }
     </tbody>
+
     
 </table>
 </div>
