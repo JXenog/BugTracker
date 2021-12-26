@@ -58,6 +58,7 @@ namespace BugTrackerWeb.Controllers
 
             _db.Projects.Remove(projectFromDb);
             _db.SaveChanges();
+            TempData["success"] = "Project deleted successfully.";
             return RedirectToAction("Index");
  
         }
@@ -77,6 +78,7 @@ namespace BugTrackerWeb.Controllers
 
                     _db.Projects.Update(entity);
                     _db.SaveChanges();
+                    TempData["success"] = "Project updated successfully.";
                     return RedirectToAction("Index");
                 } 
             }
@@ -93,6 +95,7 @@ namespace BugTrackerWeb.Controllers
             {
                 _db.Projects.Add(obj);
                 _db.SaveChanges();
+                TempData["success"] = "Project created successfully.";
                 return RedirectToAction("Index");
             }
 
