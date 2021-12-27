@@ -1,109 +1,154 @@
-﻿using BugTrackerWeb.Data;
-using BugTrackerWeb.Models;
+﻿#nullable disable
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using BugTrackerWeb.Data;
+using BugTrackerWeb.Models;
 
 namespace BugTrackerWeb.Controllers
 {
     public class ProjectController : Controller
     {
-        private readonly ApplicationDbContext _db;
+        private readonly ApplicationDbContext _context;
 
-        public ProjectController(ApplicationDbContext db)
+        public ProjectController(ApplicationDbContext context)
         {
-            _db = db;
+            _context = context;
         }
 
-        public IActionResult Index()
+        // GET: Project
+        public async Task<IActionResult> Index()
         {
-            IEnumerable<Project> objProjectList = _db.Projects.OrderBy(x => x.DisplayOrder);
-            return View(objProjectList);
+            return View(await _context.Projects.ToListAsync());
         }
 
-        //GET
+        // GET: Project/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var project = await _context.Projects
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            return View(project);
+        }
+
+        // GET: Project/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        //GET
-        public IActionResult Edit(int? id)
-        {
-            if(id == null || id == 0)
-            {
-                return NotFound();
-            }
-            var projectFromDb = _db.Projects.Find(id);
-            if(projectFromDb == null)
-            {
-                return NotFound();
-            }
-
-            return View(projectFromDb);
-        }
-
-        //POST
+        // POST: Project/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Create([Bind("Title,DisplayOrder,Id,CreatedDate,UpdateDate")] Project project)
         {
-            if (id == null || id == 0)
+            if (ModelState.IsValid)
             {
-                TempData["error"] = "Failed to delete project.";
-                return NotFound();
+                _context.Add(project);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-            var projectFromDb = _db.Projects.Find(id);
-            if (projectFromDb == null)
-            {
-                TempData["error"] = "Failed to delete project.";
-                return NotFound();
-            }
-
-            _db.Projects.Remove(projectFromDb);
-            _db.SaveChanges();
-            TempData["success"] = "Project deleted successfully.";
-            return RedirectToAction("Index");
- 
+            return View(project);
         }
 
-        //POST
+        // GET: Project/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var project = await _context.Projects.FindAsync(id);
+            if (project == null)
+            {
+                return NotFound();
+            }
+            return View(project);
+        }
+
+        // POST: Project/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Project obj)
+        public async Task<IActionResult> Edit(int id, [Bind("Title,DisplayOrder,Id,CreatedDate,UpdateDate")] Project project)
         {
-            if (ModelState.IsValid && obj != null)
+            if (id != project.Id)
             {
-                var entity = _db.Projects.Find(obj.Id);
-                if(entity != null)
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
                 {
-                    entity.Title = obj.Title;
-                    entity.DisplayOrder = obj.DisplayOrder;
-
-                    _db.Projects.Update(entity);
-                    _db.SaveChanges();
-                    TempData["success"] = "Project updated successfully.";
-                    return RedirectToAction("Index");
-                } 
+                    _context.Update(project);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ProjectExists(project.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
             }
-
-            TempData["error"] = "Failed to update project.";
-            return View(obj);
+            return View(project);
         }
 
-        //POST
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(Project obj)
+        // GET: Project/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
-            if(ModelState.IsValid)
+            if (id == null)
             {
-                _db.Projects.Add(obj);
-                _db.SaveChanges();
-                TempData["success"] = "Project created successfully.";
-                return RedirectToAction("Index");
+                return NotFound();
             }
 
-            TempData["error"] = "Failed to create project.";
-            return View(obj);
+            var project = await _context.Projects
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            return View(project);
+        }
+
+        // POST: Project/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var project = await _context.Projects.FindAsync(id);
+            _context.Projects.Remove(project);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool ProjectExists(int id)
+        {
+            return _context.Projects.Any(e => e.Id == id);
         }
     }
 }
