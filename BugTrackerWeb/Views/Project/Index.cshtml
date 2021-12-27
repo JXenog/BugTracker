@@ -17,47 +17,45 @@
     </div>
     <br />
 
-
-<table class="table table-bordered table-striped" style="width:100%">
-    <thead>
-        <tr>
-            <th>
-                Category Name
-            </th>
-            <th>
-                Creation Date
-            </th>
-            <th>
-                Latest Update Date
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach(var obj in Model)
-        {
+    <table class="table table-bordered table-striped" style="width:100%">
+        <thead>
             <tr>
-                <td width="50%">
-                    @obj.Title
-                </td>
-                <td width="30%">
-                    @obj.CreatedDate
-                </td>
-                <td width="30%">
-                    @obj.UpdateDate
-                </td>
-                <td width="20%" style="text-align:center">
-                    <form id="deleteForm" method="post" asp-action="Delete" asp-route-id="@obj.Id"></form>
-                    <div class="btn-group" role="group">                        
-                        <a asp-controller="Project" asp-action="Edit" asp-route-id="@obj.Id"
-                        class="btn btn-primary"> <i class="bi bi-gear-fill"></i></a>
-                        <button form="deleteForm" type="submit" class="btn btn btn-outline-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Project"> <i class="bi bi-folder-x"></i></button>
-                    </div>
-                </td>
+                <th>
+                    Category Name
+                </th>
+                <th>
+                    Creation Date
+                </th>
+                <th>
+                    Latest Update Date
+                </th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-
-    
-</table>
+        </thead>
+        <tbody>
+            @foreach(var obj in Model)
+            {
+                <tr>
+                    <td width="50%">
+                        @obj.Title
+                    </td>
+                    <td width="30%">
+                        @obj.CreatedDate
+                    </td>
+                    <td width="30%">
+                        @obj.UpdateDate
+                    </td>
+                    <td width="20%" style="text-align:center">
+                        <form id="@obj.Id" method="post" asp-action="Delete" asp-route-id="@obj.Id"></form>
+                        <div class="btn-group" role="group">                        
+                            <a asp-controller="Project" asp-action="Edit" asp-route-id="@obj.Id"
+                            class="btn btn-primary"> <i class="bi bi-gear-fill"></i></a>
+                            <button form="@obj.Id" type="submit" class="btn btn btn-outline-danger" data-bs-toggle="tooltip" 
+                            data-bs-placement="top" title="Delete Project"> <i class="bi bi-folder-x"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
