@@ -10,5 +10,12 @@ namespace BugTrackerWeb.Models
         [Required]
         public string Description { get; set; }
         public bool Fixed { get; set; } = false;
+
+        // Navigation Properties
+        [Required]
+        public int ProjectId { get; set; }
+
+        [Required]
+        public Project Project { get; set; }
     }
 }

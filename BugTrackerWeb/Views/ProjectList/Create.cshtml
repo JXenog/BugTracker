@@ -20,12 +20,13 @@
         <a asp-controller="ProjectList" asp-action="Index" class="btn btn-primary" style="width:150px">
             Back to List
         </a>
+        <script type = "text/javascript">
+            function DisableButton() {
+                document.getElementById("create").disabled = true;
+            }
+            window.onbeforeunload = DisableButton;
+        </script>
     </div>
 </form>
 
-<script type = "text/javascript">
-    function DisableButton() {
-        document.getElementById("<%=create.ClientID %>").disabled = true;
-    }
-    window.onbeforeunload = DisableButton;
-</script>
+

@@ -10,8 +10,8 @@
             <h2 class="text-primary">Project List</h2>
         </div>
         <div class="col-6 text-end">
-            <a asp-controller="ProjectList" asp-action="Create" class="btn btn-outline-success">
-                <i class="bi bi-folder-plus"></i> &nbsp; New Project
+            <a asp-controller="ProjectList" asp-action="Create" class="btn btn-success">
+                <i class="bi bi-folder-plus"></i>&nbsp;New Project
             </a>
         </div>
     </div>
@@ -36,21 +36,21 @@
             @foreach(var obj in Model)
             {
                 <tr>
-                    <td width="50%">
-                        @obj.Title
+                    <td width="50%" class="align-middle">
+                        <a asp-controller="Project" asp-action="Index">@obj.Title</a>
                     </td>
-                    <td width="30%">
-                        @obj.CreatedDate.ToString("dd MMMM, yyyy")
+                    <td width="15%" class="align-middle">
+                        @obj.CreatedDate.ToString("mm/dd/yyyy")
                     </td>
-                    <td width="30%">
+                    <td width="15%" class="align-middle">
                         @obj.UpdateDate
                     </td>
-                    <td width="20%" style="text-align:center">
+                    <td width="5%" class="text-center align-middle">
                         <form id="@obj.Id" method="post" asp-action="Delete" asp-route-id="@obj.Id"></form>
-                        <div class="btn-group" role="group">                        
+                        <div class="btn-group text-center align-middle" role="group">                        
                             <a asp-controller="ProjectList" asp-action="Edit" asp-route-id="@obj.Id"
-                            class="btn btn-primary btn-sm"> <i class="bi bi-gear-fill"></i></a>
-                            <button form="@obj.Id" type="submit" class="btn btn-outline-danger btn-sm" data-bs-toggle="tooltip" 
+                            class="btn btn-primary text-center align-middle"> <i class="bi bi-gear-fill"></i></a>
+                            <button form="@obj.Id" type="submit" class="btn btn-danger text-center align-middle" data-bs-toggle="tooltip" 
                             data-bs-placement="top" title="Delete Project"> <i class="bi bi-folder-x"></i></button>
                         </div>
                     </td>

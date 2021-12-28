@@ -10,5 +10,8 @@ namespace BugTrackerWeb.Models
         [Display(Name = "Priority")]
         [Range(1, 100, ErrorMessage = "Priority must be between 1 and 100!!")]
         public int DisplayOrder { get; set; }
+
+        // Navigation Properties
+        public List<Bug> Bugs { get; set; } = new List<Bug>();
     }
 }
