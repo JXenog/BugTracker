@@ -4,6 +4,7 @@ using BugTrackerWeb.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BugTrackerWeb.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211230043607_FixSeverityColumnBugs")]
+    partial class FixSeverityColumnBugs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,7 +59,7 @@ namespace BugTrackerWeb.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Bugs", (string)null);
+                    b.ToTable("Bug");
                 });
 
             modelBuilder.Entity("BugTrackerWeb.Models.Project", b =>
@@ -80,7 +82,7 @@ namespace BugTrackerWeb.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Projects", (string)null);
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("BugTrackerWeb.Models.Bug", b =>

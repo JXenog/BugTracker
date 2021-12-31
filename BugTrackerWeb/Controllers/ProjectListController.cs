@@ -1,65 +1,70 @@
 ﻿using BugTrackerWeb.Data;
 using BugTrackerWeb.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-namespace BugTrackerWeb.Controllers
-{
-    public class ProjectListController : Controller
-    {
+namespace BugTrackerWeb.Controllers {
+    public class ProjectListController : Controller {
         private readonly ApplicationDbContext _db;
 
-        public ProjectListController(ApplicationDbContext db)
-        {
+        public ProjectListController(ApplicationDbContext db) {
             _db = db;
         }
 
-        public IActionResult Index()
-        {
-            IEnumerable<Project> objProjectList = _db.Projects.OrderBy(x => x.DisplayOrder);
+        public async Task<IActionResult> Index() {
+            IEnumerable<Project> objProjectList = await _db.Projects.OrderBy(x => x.Title).ToListAsync();
             return View(objProjectList);
         }
 
         //GET
-        public IActionResult Create()
-        {
+        public IActionResult Create() {
             return View();
         }
 
         //GET
-        public IActionResult Edit(int? id)
-        {
-            if (id == null || id == 0)
-            {
+        public async Task<IActionResult> Edit(int? id) {
+            if (id == null || id == 0) {
                 return NotFound();
             }
-            var projectFromDb = _db.Projects.Find(id);
-            if (projectFromDb == null)
-            {
+            var projectFromDb = await _db.Projects.FindAsync(id);
+            if (projectFromDb == null) {
                 return NotFound();
             }
 
             return View(projectFromDb);
         }
 
+        // GET
+        public async Task<IActionResult> Project(int? id) {
+            if (id == null) {
+                return NotFound();
+            }
+
+            var project = await _db.Projects.Include(b => b.Bugs).FirstOrDefaultAsync(a => a.Id == id);
+
+            if (project == null) {
+                return NotFound();
+            }
+
+            return View(project);
+        }
+
         //POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int? id)
-        {
-            if (id == null || id == 0)
-            {
+        public async Task<IActionResult> Delete(int? id) {
+            if (id == null || id == 0) {
                 TempData["error"] = "Failed to delete project.";
                 return NotFound();
             }
-            var projectFromDb = _db.Projects.Find(id);
-            if (projectFromDb == null)
-            {
+            var projectFromDb = await _db.Projects.FindAsync(id);
+            if (projectFromDb == null) {
                 TempData["error"] = "Failed to delete project.";
                 return NotFound();
             }
 
             _db.Projects.Remove(projectFromDb);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
             TempData["success"] = "Project deleted successfully.";
             return RedirectToAction("Index");
 
@@ -68,18 +73,14 @@ namespace BugTrackerWeb.Controllers
         //POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Project obj)
-        {
-            if (ModelState.IsValid && obj != null)
-            {
-                var entity = _db.Projects.Find(obj.Id);
-                if (entity != null)
-                {
+        public async Task<IActionResult> Edit(Project obj) {
+            if (ModelState.IsValid) {
+                var entity = await _db.Projects.FindAsync(obj.Id);
+                if (entity != null) {
                     entity.Title = obj.Title;
-                    entity.DisplayOrder = obj.DisplayOrder;
 
                     _db.Projects.Update(entity);
-                    _db.SaveChanges();
+                    await _db.SaveChangesAsync();
                     TempData["success"] = "Project updated successfully.";
                     return RedirectToAction("Index");
                 }
@@ -92,13 +93,12 @@ namespace BugTrackerWeb.Controllers
         //POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Project obj)
-        {
-            if (ModelState.IsValid)
-            {
+        public async Task<IActionResult> Create(Project obj) {
+            if (ModelState.IsValid) {
                 _db.Projects.Add(obj);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
                 TempData["success"] = "Project created successfully.";
+
                 return RedirectToAction("Index");
             }
 

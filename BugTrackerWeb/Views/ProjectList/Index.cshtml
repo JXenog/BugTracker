@@ -4,14 +4,14 @@
     ViewData["Title"] = "Index";
 }
 
-<div class="container p-3">
+<div class="container-fluid container-lg pt-5 pb-4">
     <div class="row pt-4">
         <div class="col-6">
             <h2 class="text-primary">Project List</h2>
         </div>
         <div class="col-6 text-end">
             <a asp-controller="ProjectList" asp-action="Create" class="btn btn-success">
-                <i class="bi bi-folder-plus"></i>&nbsp;New Project
+                <i class="bi bi-folder-plus"></i><span class="ps-2">New Project</span>
             </a>
         </div>
     </div>
@@ -37,10 +37,10 @@
             {
                 <tr>
                     <td width="50%" class="align-middle">
-                        <a asp-controller="Project" asp-action="Index">@obj.Title</a>
+                        <a asp-controller="ProjectList" asp-action="Project" asp-route-id="@obj.Id">@obj.Title</a>
                     </td>
                     <td width="15%" class="align-middle">
-                        @obj.CreatedDate.ToString("mm/dd/yyyy")
+                        @obj.CreatedDate.ToString("MM/dd/yyyy")
                     </td>
                     <td width="15%" class="align-middle">
                         @obj.UpdateDate
