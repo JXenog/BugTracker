@@ -14,6 +14,8 @@ namespace BugTrackerWeb.Data {
 
             foreach (var entry in entries) {
                 ((BaseEntity)entry.Entity).UpdateDate = DateTime.Now;
+                if(entry.Entity is Bug) 
+                    ((Bug)entry.Entity).Project.UpdateDate = DateTime.Now;
 
                 if (entry.State == EntityState.Added) {
                     ((BaseEntity)entry.Entity).CreatedDate = DateTime.Now;
