@@ -79,12 +79,12 @@ namespace BugTrackerWeb.Controllers {
             if (id == null) {
                 return NotFound();
             }
-
-            var bug = await _db.Bugs.FindAsync(id);
+            var bug = await _db.Bugs
+               .Include(b => b.Project)
+               .FirstOrDefaultAsync(m => m.Id == id);
             if (bug == null) {
                 return NotFound();
             }
-            ViewData["ProjectId"] = new SelectList(_db.Projects, "Id", "Title", bug.ProjectId);
             return View(bug);
         }
 
@@ -93,15 +93,18 @@ namespace BugTrackerWeb.Controllers {
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,Description,Fixed,ProjectId,Id,CreatedDate,UpdateDate")] Bug bug) {
-            if (id != bug.Id) {
-                return NotFound();
-            }
+        public async Task<IActionResult> Edit([Bind("Name,Description,Fixed, Severity, Id,ProjectId")] Bug bug) {
 
-            if (ModelState.IsValid) {
+            bug.Project = _db.Projects.Find(bug.ProjectId);
+
+            if (ModelState.IsValid || bug.Project != null)
+            {
                 try {
-                    _db.Update(bug);
+                    Bug _bug = _db.Bugs.Find(bug.Id);
+                    UpdateBug(bug, _bug);
+                    _db.Update(_bug);
                     await _db.SaveChangesAsync();
+                    return RedirectToAction("Project", "ProjectList", new { id = _bug.ProjectId });
                 } catch (DbUpdateConcurrencyException) {
                     if (!BugExists(bug.Id)) {
                         return NotFound();
@@ -109,9 +112,9 @@ namespace BugTrackerWeb.Controllers {
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                
             }
-            ViewData["ProjectId"] = new SelectList(_db.Projects, "Id", "Title", bug.ProjectId);
+          
             return View(bug);
         }
 
@@ -138,11 +141,28 @@ namespace BugTrackerWeb.Controllers {
             var bug = await _db.Bugs.FindAsync(id);
             _db.Bugs.Remove(bug);
             await _db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Project", "ProjectList", new { id = bug.ProjectId });
         }
 
         private bool BugExists(int id) {
             return _db.Bugs.Any(e => e.Id == id);
+        }
+
+        private void UpdateBug(Bug Model, Bug bug)
+        {
+            if (Model == null)
+            {
+                throw new ArgumentNullException(nameof(Model));
+            }
+            if (bug == null)
+            {
+                return;
+            }
+
+            bug.Fixed = Model.Fixed;
+            bug.Name = Model.Name;
+            bug.Description = Model.Description;
+            bug.Severity = Model.Severity;
         }
     }
 }

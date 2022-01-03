@@ -51,8 +51,14 @@
                                     @obj.UpdateDate
                                 </td>
                                 <td width="15%" class="align-middle">
+                                    <form asp-controller="Bug" id="@obj.Id" method="post" asp-action="Delete" asp-route-id="@obj.Id"></form>
                                     <a asp-controller="Bug" asp-action="Details" asp-route-id="@obj.Id" 
                                     class="btn btn-info btn-sm align-items-center text-center">Details</a>
+                                    <a asp-controller="Bug" asp-action="Edit" asp-route-id="@obj.Id"
+                                    class="btn btn-primary btn-sm align-items-center text-center"> <i class="bi bi-gear-fill"></i></a>
+                                    <button form="@obj.Id" type="submit" class="btn btn-danger btn-sm align-items-center text-center" data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" title="Delete Bug"> <i class="bi bi-x-circle"></i></button>
+                                    
                                 </td>
                             </tr>
                             }
