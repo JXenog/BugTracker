@@ -361,3 +361,11 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Downloads
+toastr.css
+toastr.min.css
+toastr.js.map
+toastr.min.js
+morphTheme.css
+lib/
